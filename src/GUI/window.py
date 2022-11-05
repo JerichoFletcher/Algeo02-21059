@@ -59,4 +59,5 @@ def init_window():
         image=background_img)
 
     window.resizable(False, False)
+    window.title("Face Recognition")
     window.mainloop()
