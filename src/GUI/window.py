@@ -1,9 +1,16 @@
 from tkinter import *
-
+from tkinter import filedialog
 
 def btn_clicked():
     print("Button Clicked")
 
+def files():
+    Tk.filename = filedialog.askopenfile()
+
+def folders():
+    root = Tk()
+    root.withdraw()
+    folder = filedialog.askdirectory()
 
 window = Tk()
 
@@ -24,7 +31,7 @@ b0 = Button(
     image = img0,
     borderwidth = 0,
     highlightthickness = 0,
-    command = btn_clicked,
+    command = folders,
     relief = "flat")
 
 b0.place(
@@ -37,7 +44,7 @@ b1 = Button(
     image = img1,
     borderwidth = 0,
     highlightthickness = 0,
-    command = btn_clicked,
+    command = files,
     relief = "flat")
 
 b1.place(
