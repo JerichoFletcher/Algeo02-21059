@@ -1,19 +1,24 @@
 from tkinter import *
 from tkinter import filedialog
+import os
 
 def btn_clicked():
     print("Button Clicked")
 
-def files():
-    Tk.filename = filedialog.askopenfile()
-
-def folders():
-    root = Tk()
-    root.withdraw()
-    folder = filedialog.askdirectory()
-
 def init_window():
     window = Tk()
+    def folders():
+        root = Tk()
+        root.withdraw()
+        folder = filedialog.askdirectory() 
+        folder_only = os.path.basename(folder)
+        canvas.itemconfig(no_folder_default ,text = folder_only)
+
+    def files():
+        filename = filedialog.askopenfilename()
+        head, tail = os.path.split(filename)
+        file_only = head.split('/')
+        canvas.itemconfig(no_file_default, text = tail) 
 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
@@ -26,6 +31,9 @@ def init_window():
         highlightthickness = 0,
         relief = "ridge")
     canvas.place(x = 0, y = 0)
+
+    no_folder_default = canvas.create_text(240,275, text="No folder selected", fill="black")
+    no_file_default = canvas.create_text(235,400, text="No file selected", fill="black")
 
     img0 = PhotoImage(file = f"GUI/img0.png")
     b0 = Button(
