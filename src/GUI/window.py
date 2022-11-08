@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 import os
+from PIL import Image, ImageTk
 
 def btn_clicked():
     print("Button Clicked")
@@ -17,8 +18,11 @@ def init_window():
     def files():
         filename = filedialog.askopenfilename()
         head, tail = os.path.split(filename)
-        file_only = head.split('/')
         canvas.itemconfig(no_file_default, text = tail) 
+        gambar = ImageTk.PhotoImage(file=filename)
+        display_gambar = canvas.create_image(540,349,image=gambar)
+        display_gambar.tkraise()
+
 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
@@ -32,8 +36,9 @@ def init_window():
         relief = "ridge")
     canvas.place(x = 0, y = 0)
 
-    no_folder_default = canvas.create_text(240,275, text="No folder selected", fill="black")
-    no_file_default = canvas.create_text(235,400, text="No file selected", fill="black")
+    no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
+    no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
+
 
     img0 = PhotoImage(file = f"GUI/img0.png")
     b0 = Button(
