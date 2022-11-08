@@ -7,3 +7,6 @@ def resizeImg(filename):
 
 def imgToMatrix(filename):
     return (cv2.imread(filename))
+
+def RGBtoGrayscale(image):
+    return (cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
