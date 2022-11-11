@@ -26,8 +26,13 @@ def init_window():
         imeg = Image.open(filename)
         resized = imeg.resize((256,256), Image.ANTIALIAS)
         new = ImageTk.PhotoImage(resized)
-        display_gambar = canvas.create_image(540,349,image=new)
-        display_gambar.tkraise()
+
+        # Place in frame
+        inplabel.configure(image = new)
+        inplabel.image = new
+
+        #display_gambar = canvas.create_image(540,349,image=new)
+        #display_gambar.tkraise()
 
     def baca_folder(folder):
         for _files in os.listdir(folder):
@@ -51,6 +56,14 @@ def init_window():
         highlightthickness = 0,
         relief = "ridge")
     canvas.place(x = 0, y = 0)
+
+    # Image display frame
+    imgframe = Frame(window, width=1100, height=600)
+    imgframe.pack()
+    imgframe.place(anchor="center", relx=540./1100., rely=349./600.)
+
+    inplabel = Label(imgframe, image=None)
+    inplabel.pack()
 
     no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
     no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
