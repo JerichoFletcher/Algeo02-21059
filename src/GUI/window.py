@@ -19,8 +19,10 @@ def init_window():
         filename = filedialog.askopenfilename()
         head, tail = os.path.split(filename)
         canvas.itemconfig(no_file_default, text = tail) 
-        gambar = ImageTk.PhotoImage(file=filename)
-        display_gambar = canvas.create_image(540,349,image=gambar)
+        imeg = Image.open(filename)
+        resized = imeg.resize((256,256), Image.ANTIALIAS)
+        new = ImageTk.PhotoImage(resized)
+        display_gambar = canvas.create_image(540,349,image=new)
         display_gambar.tkraise()
 
 
