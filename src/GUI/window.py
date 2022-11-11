@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter import filedialog
 import os
 from PIL import Image, ImageTk
+import util.processimage as process
+import numpy as np
 
-def btn_clicked():
-    print("Button Clicked")
 
 def init_window():
     window = Tk()
@@ -14,6 +14,10 @@ def init_window():
         folder = filedialog.askdirectory() 
         folder_only = os.path.basename(folder)
         canvas.itemconfig(no_folder_default ,text = folder_only)
+        array_image = np.array([])
+        for matrix in baca_folder(folder):
+            np.append(array_image,matrix)
+        print(len(array_image))    
 
     def files():
         filename = filedialog.askopenfilename()
@@ -25,7 +29,17 @@ def init_window():
         display_gambar = canvas.create_image(540,349,image=new)
         display_gambar.tkraise()
 
-
+    def baca_folder(folder):
+        for _files in os.listdir(folder):
+            files = os.path.join(folder, _files)
+            if(os.path.isfile(files)):
+                img = process.resizeImg(files)
+                img = process.RGBtoGrayscale(img)
+                matrix = process.imgToMatrix(img)
+                yield matrix
+            else:
+                yield baca_folder(files)
+                
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
     canvas = Canvas(
