@@ -11,10 +11,27 @@ def err(val, orig):
     r = float(orig / val)
     return abs(1.0 - r)
 
-# decomposeQR -- Mengembalikan Q, R di mana Q dan R adalah matriks dekomposisi QR dari M
+# decomposeQR -- Mengembalikan Q, R di mana Q dan R adalah matriks dekomposisi QR dari M menggunakan proses Gram-Schmidt
 def decomposeQR(M):
     # TODO: Implementasi algoritma dekomposisi QR
-    return np.linalg.qr(M)
+    N = M.shape[0]
+
+    u = np.empty(N)
+    Q = np.empty(N)
+
+    for i in range(N):
+        if i == 0:
+            u[:,0] = M[:,0]
+            Q[:,0] = u[:,0] / np.linalg.norm(u[:,0])
+        else:
+            a = M[:,i]
+            for j in range(i):
+                u[:,i] = a - (a @ Q[:,j]) * Q[:,j]
+            Q[:,i] = u[:,i] / np.linalg.norm(u[:,i])
+    
+    R = np.array([[M[:,j] @ Q[:,i] for j in range(i,N)] for i in range(N)])
+    return Q, R
+    #return np.linalg.qr(M)
 
 # extractEigenpairsQR -- Mengembalikan L, V di mana:
 #   L adalah array berisi taksiran semua eigenvalue dari M
@@ -103,12 +120,11 @@ def extractEigenpairsPI(M):
 if __name__ == '__main__':
     debug = True
 
-    """mat = np.array(
-        [[52., 30., 49., 28.],
-        [30., 50., 8., 44.],
-        [49., 8., 46., 16.],
-        [28., 44., 16., 22.]]
-    )"""
+    """mat = np.array([
+        [1., 2., 4.],
+        [0., 3., 0.],
+        [0., 0., 5.]
+    ])"""
     mat = np.array([[random.random() for j in range(256)] for i in range(256)])
 
     # Test with power iteration
