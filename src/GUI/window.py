@@ -14,10 +14,10 @@ def init_window():
         folder = filedialog.askdirectory() 
         folder_only = os.path.basename(folder)
         canvas.itemconfig(no_folder_default ,text = folder_only)
-        array_image = np.array([])
+        array_image = []
         for matrix in baca_folder(folder):
-            np.append(array_image,matrix)
-        print(len(array_image))    
+            array_image.append(matrix)
+        print(len(array_image))
 
     def files():
         filename = filedialog.askopenfilename()
@@ -38,12 +38,11 @@ def init_window():
         for _files in os.listdir(folder):
             files = os.path.join(folder, _files)
             if(os.path.isfile(files)):
-                img = process.resizeImg(files)
-                img = process.RGBtoGrayscale(img)
-                matrix = process.imgToMatrix(img)
+                matrix = process.loadImg(files)
                 yield matrix
             else:
-                yield baca_folder(files)
+                for m in baca_folder(files):
+                    yield m
                 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
