@@ -1,7 +1,7 @@
 import numpy as np
-from processimage import *
+from util.processimage import *
 
-N = 3
+#N = 3
 
 def matrixToVector(m):
     # Mengubah matriks m (N x N) menjadi vektor (N^2 x 1)

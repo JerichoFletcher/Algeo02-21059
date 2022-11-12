@@ -3,8 +3,13 @@ from tkinter import filedialog
 import os
 from PIL import Image, ImageTk
 import util.processimage as process
+from util.eigenface import eigenface
 import numpy as np
+import util.benchmark as bm
 
+# Deklarasi
+array_image = []
+inplabel = None
 
 def init_window():
     window = Tk()
@@ -14,22 +19,40 @@ def init_window():
         folder = filedialog.askdirectory() 
         folder_only = os.path.basename(folder)
         canvas.itemconfig(no_folder_default ,text = folder_only)
-        array_image = []
+
+        # Load image in folder
+        array_image.clear()
         for matrix in baca_folder(folder):
             array_image.append(matrix)
-        print(len(array_image))
+        print(f"{len(array_image)} pictures loaded, first element:")
+        mattest = np.array(array_image[0])
+        print(f"Size: {mattest.shape}")
+        print(mattest)
+
+        # Hitung eigenface
+        t0, t1 = bm.run_measure_ns(lambda: eigenface(array_image))
+        print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
 
     def files():
+        global inplabel
+
         filename = filedialog.askopenfilename()
         head, tail = os.path.split(filename)
-        canvas.itemconfig(no_file_default, text = tail) 
+        canvas.itemconfig(no_file_default, text = tail)
+
+        # Load image
         imeg = Image.open(filename)
         resized = imeg.resize((256,256), Image.ANTIALIAS)
         new = ImageTk.PhotoImage(resized)
 
         # Place in frame
+        if inplabel is not None:
+            inplabel.destroy()
+        inplabel = Label(imgdatframe)
+        inplabel.pack()
         inplabel.configure(image = new)
         inplabel.image = new
+        imgdatframe.tkraise()
 
         #display_gambar = canvas.create_image(540,349,image=new)
         #display_gambar.tkraise()
@@ -46,6 +69,22 @@ def init_window():
                 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
+
+    # FRAME CONSTRUCTION
+    # Background frame
+    #bgiframe = Frame(window, width=1100, height=600)
+    #bgiframe.pack()
+    #bgiframe.place(anchor="center", relx=.5, rely=.5)
+    #bgiframe.tkraise()
+
+    # Image display frame
+    imgdatframe = Frame(window, width=1100, height=600)
+    imgdatframe.pack()
+    imgdatframe.place(anchor="center", relx=540./1100., rely=349./600.)
+
+    #inplabel = Label(imgdatframe)
+    #inplabel.pack()
+
     canvas = Canvas(
         window,
         bg = "#fffffa",
@@ -55,14 +94,6 @@ def init_window():
         highlightthickness = 0,
         relief = "ridge")
     canvas.place(x = 0, y = 0)
-
-    # Image display frame
-    imgframe = Frame(window, width=1100, height=600)
-    imgframe.pack()
-    imgframe.place(anchor="center", relx=540./1100., rely=349./600.)
-
-    inplabel = Label(imgframe, image=None)
-    inplabel.pack()
 
     no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
     no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
@@ -101,4 +132,5 @@ def init_window():
 
     window.resizable(False, False)
     window.title("Face Recognition")
+    window.protocol("WM_DELETE_WINDOW", window.destroy)
     window.mainloop()
