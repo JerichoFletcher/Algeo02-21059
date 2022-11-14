@@ -29,26 +29,26 @@ def eigenface(dataset):
     print(dataset)
     # dataset adalah array of matriks gambar dengan ukuran N x N
     # ubdah semua matriks pada data set menjadi ukuran N^2 x 1
-    datasetVector = np.array([[[0] for i in range(N**2)] for x in range (len(dataset))])
+    datasetVector = np.array([[[0] for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
     for i in range (len(dataset)):
         datasetVector[i] = (matrixToVector(dataset[i]))
     print("datasetVector")
     print(datasetVector)
     
     # mencari mean dari semua matriks dataset
-    sumMatrix = np.array([[0] for i in range (N**2)])
+    sumMatrix = np.array([[0] for i in range (len(dataset[0])**2)])
     #sumMatrix = np.zeros((N**2, 1))
     #sumMatrix = np.array([[0 for j in range(N**2)] for i in range(N**2)])
     for i in range (0,len(datasetVector)):
         sumMatrix = sumMatrix + datasetVector[i]
         #print("sum matrix")
         #print(sumMatrix)
-    meanDataset = (sumMatrix / len(datasetVector))
+    meanDataset = np.floor(sumMatrix / len(datasetVector))
     print("mean data set")
     print(meanDataset)
     
     # cari selisih dari tiap matriks dataset dengan meanDataset
-    selisih = np.array([[[0.] for i in range(N**2)] for x in range (len(dataset))])
+    selisih = np.array([[[0] for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
     #selisih = np.arange(len(datasetVector))
     #selisih = np.array([])
     for i in range (0,len(dataset)):
