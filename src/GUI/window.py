@@ -7,9 +7,12 @@ from util.eigenface import eigenface
 import numpy as np
 import util.benchmark as bm
 
+MAX_PIC_COUNT = 5
+
 # Deklarasi
-array_image = []
+# array_image = []
 inplabel = None
+array_of_tupl = []
 
 def init_window():
     window = Tk()
@@ -21,17 +24,29 @@ def init_window():
         canvas.itemconfig(no_folder_default ,text = folder_only)
 
         # Load image in folder
-        array_image.clear()
+        array_of_tupl.clear()
+        for f, m in baca_folder(folder):
+            array_of_tupl.append((f, m))
+        """ array_image.clear()
         for matrix in baca_folder(folder):
             array_image.append(matrix)
-        print(f"{len(array_image)} pictures loaded, first element:")
-        mattest = np.array(array_image[0])
+        
+        print(f"{len(array_of_tupl)} pictures loaded, first element:")
+        mattest = np.array(array_of_tupl[0][1])
         print(f"Size: {mattest.shape}")
-        print(mattest)
+        print(array_of_tupl[0])
+        """
+        array_of_matrix = []
+        for t in array_of_tupl:
+            array_of_matrix.append(t[1])
+
+        eigenface(array_of_matrix)
 
         # Hitung eigenface
-        t0, t1 = bm.run_measure_ns(lambda: eigenface(array_image))
-        print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
+        #t0, t1 = bm.run_measure_ns(lambda: eigenface(array_of_tupl))
+        #print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
+
+        #"""
 
     def files():
         global inplabel
@@ -58,14 +73,38 @@ def init_window():
         #display_gambar.tkraise()
 
     def baca_folder(folder):
-        for _files in os.listdir(folder):
-            files = os.path.join(folder, _files)
-            if(os.path.isfile(files)):
-                matrix = process.loadImg(files)
-                yield matrix
+        '''
+        i = 0
+        c = 0
+        _dirs = os.listdir(folder)
+        while c < MAX_PIC_COUNT and i < len(_dirs):
+            _file = _dirs[i]
+            filepath = os.path.join(folder, _file)
+            if(os.path.isfile(filepath)):
+                c += 1
+                matrix = process.loadImg(filepath)
+                #head, tail = os.path.split(files)
+                yield _file, matrix
             else:
-                for m in baca_folder(files):
-                    yield m
+                for t, m in baca_folder(filepath):
+                    yield t, m
+            i += 1
+        '''
+
+        #'''
+        i = 0
+        for _files in os.listdir(folder):
+            if i >= MAX_PIC_COUNT: break
+            filepath = os.path.join(folder, _files)
+            if(os.path.isfile(filepath)):
+                i += 1
+                matrix = process.loadImg(filepath)
+                #head, tail = os.path.split(filepath)
+                yield _files, matrix
+            else:
+                for t, m in baca_folder(filepath):
+                    yield t, m
+        #'''
                 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
