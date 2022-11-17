@@ -6,6 +6,7 @@ import util.processimage as process
 from util.eigenface import eigenface
 import numpy as np
 import util.benchmark as bm
+import time
 
 MAX_PIC_COUNT = 5
 
@@ -45,9 +46,9 @@ def init_window():
         # Hitung eigenface
         #t0, t1 = bm.run_measure_ns(lambda: eigenface(array_of_tupl))
         #print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
-
         #"""
 
+        
     def files():
         global inplabel
 
@@ -136,7 +137,7 @@ def init_window():
 
     no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
     no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
-
+    execution_time = canvas.create_text(540,518, text="", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','13'))
 
     img0 = PhotoImage(file = f"GUI/img0.png")
     b0 = Button(
