@@ -26,7 +26,8 @@ def init_window():
         global cek_eigenface, matrix_image, index_result
         root = Tk()
         root.withdraw()
-        folder = filedialog.askdirectory() 
+        folder = filedialog.askdirectory()
+        if folder == '': return
         folder_only = os.path.basename(folder)
         canvas.itemconfig(no_folder_default ,text = folder_only)
 
@@ -73,6 +74,7 @@ def init_window():
         global inplabel, matrix_image, index_result
 
         filename = filedialog.askopenfilename()
+        if filename == '': return
         head, tail = os.path.split(filename)
         canvas.itemconfig(no_file_default, text = tail)
 
