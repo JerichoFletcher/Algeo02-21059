@@ -168,6 +168,7 @@ def init_window():
     no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
     no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
     execution_time = canvas.create_text(540,518, text="", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','13'))
+    file_result = canvas.create_text(120,510,text="None", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','13'))
 
     img0 = PhotoImage(file = f"GUI/img0.png")
     b0 = Button(
