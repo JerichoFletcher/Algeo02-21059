@@ -13,13 +13,14 @@ MAX_PIC_COUNT = 5
 # Deklarasi
 # array_image = []
 inplabel = None
+outlabel = None
 array_of_inp = []
 array_of_out = []
+cek_eigenface = False
+matrix_image = None
+index_result = None
 
 def init_window():
-    cek_eigenface = False
-    matrix_image = None
-    index_result = None
     window = Tk()
     def folders():
         global cek_eigenface, matrix_image, index_result
@@ -48,30 +49,28 @@ def init_window():
         """
 
         array_of_matrix = []
-        array_of_eigface = []
+        #array_of_eigface = []
         for t in array_of_inp:
             array_of_matrix.append(t[1])
 
         def getEigface():
-            global array_of_eigface
-            array_of_eigface = eigenface(array_of_matrix)
+            eigenface(array_of_matrix)
 
         # Hitung eigenface
         t0, t1 = bm.run_measure_ns(getEigface)
         print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
 
-        for i in range(len(array_of_eigface)):
-            array_of_eigface.append((array_of_inp[i][0], array_of_eigface[i]))
+        #for i in range(len(array_of_eigface)):
+        #    array_of_eigface.append((array_of_inp[i][0], array_of_eigface[i]))
 
         cek_eigenface = True
 
         if matrix_image is not None:
             index_result = testImage(matrix_image)
+            display_hasil()
             
     def files():
-        global inplabel
-        global matrix_image
-        global index_result
+        global inplabel, matrix_image, index_result
 
         filename = filedialog.askopenfilename()
         head, tail = os.path.split(filename)
@@ -85,16 +84,23 @@ def init_window():
         # Place in frame
         if inplabel is not None:
             inplabel.destroy()
-        inplabel = Label(imgdatframe)
+        inplabel = Label(imginpframe)
         inplabel.pack()
         inplabel.configure(image = new)
         inplabel.image = new
-        imgdatframe.tkraise()
+        imginpframe.tkraise()
 
         matrix_image = process.loadImg(filename)
 
         if cek_eigenface:
-            index_result = testImage(matrix_image)
+            def getTestImage():
+                global index_result, matrix_image
+                index_result = testImage(matrix_image)
+
+            t0, t1 = bm.run_measure_ns(getTestImage)
+            print(f"Finished testface comparison in {(t1-t0)/1E9} seconds")
+
+            display_hasil()
 
         #display_gambar = canvas.create_image(540,349,image=new)
         #display_gambar.tkraise()
@@ -127,7 +133,7 @@ def init_window():
                 i += 1
                 matrix = process.loadImg(filepath)
                 #head, tail = os.path.split(filepath)
-                yield _files, matrix
+                yield filepath, matrix
             else:
                 for t, m in baca_folder(filepath):
                     yield t, m
@@ -135,7 +141,24 @@ def init_window():
                 
 
     def display_hasil():
-        global index_result
+        global outlabel, index_result, array_of_inp
+
+        filename, _ = array_of_inp[index_result]
+
+        # Load image
+        imeg = Image.open(filename)
+        resized = imeg.resize((256,256), Image.ANTIALIAS)
+        new = ImageTk.PhotoImage(resized)
+
+        # Place in frame
+        if outlabel is not None:
+            outlabel.destroy()
+        outlabel = Label(imgoutframe)
+        outlabel.pack()
+        outlabel.configure(image = new)
+        outlabel.image = new
+        imgoutframe.tkraise()
+
 
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
@@ -148,11 +171,16 @@ def init_window():
     #bgiframe.tkraise()
 
     # Image display frame
-    imgdatframe = Frame(window, width=1100, height=600)
-    imgdatframe.pack()
-    imgdatframe.place(anchor="center", relx=540./1100., rely=349./600.)
+    imginpframe = Frame(window, width=1100, height=600)
+    imginpframe.pack()
+    imginpframe.place(anchor="center", relx=540./1100., rely=349./600.)
 
-    #inplabel = Label(imgdatframe)
+    # Image output frame
+    imgoutframe = Frame(window, width=1100, height=600)
+    imgoutframe.pack()
+    imgoutframe.place(anchor="center", relx=887./1100., rely=349./600.)
+
+    #inplabel = Label(imginpframe)
     #inplabel.pack()
 
     canvas = Canvas(
