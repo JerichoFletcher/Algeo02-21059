@@ -35,9 +35,10 @@ def init_window():
         array_of_inp.clear()
         array_of_out.clear()
 
-        for f, m in baca_folder(folder):
+        for f, m in baca_folder(folder, True):
             array_of_inp.append((f, m))
 
+        print(f'Dataset of size {len(array_of_inp)} loaded')
         
         """ array_image.clear()
         for matrix in baca_folder(folder):
@@ -107,7 +108,7 @@ def init_window():
         #display_gambar = canvas.create_image(540,349,image=new)
         #display_gambar.tkraise()
 
-    def baca_folder(folder):
+    def baca_folder(folder, loadAll:bool):
         '''
         i = 0
         c = 0
@@ -129,7 +130,7 @@ def init_window():
         #'''
         i = 0
         for _files in os.listdir(folder):
-            if i >= MAX_PIC_COUNT: break
+            if not loadAll and i >= MAX_PIC_COUNT: break
             filepath = os.path.join(folder, _files)
             if(os.path.isfile(filepath)):
                 i += 1
@@ -137,7 +138,7 @@ def init_window():
                 #head, tail = os.path.split(filepath)
                 yield filepath, matrix
             else:
-                for t, m in baca_folder(filepath):
+                for t, m in baca_folder(filepath, False):
                     yield t, m
         #'''
                 

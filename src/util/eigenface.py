@@ -157,4 +157,5 @@ def testImage(newFace):
         if (min > EuclideanDistance[i]):
             min = EuclideanDistance[i]
             idxmin = i
+    print(f'Found picture with distance {min}')
     return idxmin
