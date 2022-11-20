@@ -59,7 +59,7 @@ def init_window():
         # Hitung eigenface
         t0, t1 = bm.run_measure_ns(getEigface)
         print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
-
+        canvas.itemconfig(execution_time ,text = (t1-t0)/1E9)
         #for i in range(len(array_of_eigface)):
         #    array_of_eigface.append((array_of_inp[i][0], array_of_eigface[i]))
 
@@ -99,7 +99,7 @@ def init_window():
 
             t0, t1 = bm.run_measure_ns(getTestImage)
             print(f"Finished testface comparison in {(t1-t0)/1E9} seconds")
-
+            canvas.itemconfig(execution_time ,text = (t1-t0)/1E9)
             display_hasil()
 
         #display_gambar = canvas.create_image(540,349,image=new)
@@ -158,6 +158,9 @@ def init_window():
         outlabel.configure(image = new)
         outlabel.image = new
         imgoutframe.tkraise()
+        
+        nama_file = os.path.basename(filename)
+        canvas.itemconfig(file_result ,text = nama_file)
 
 
     window.geometry("1100x600")
@@ -196,7 +199,7 @@ def init_window():
     no_folder_default = canvas.create_text(190,275, text="No folder selected", fill="black", justify="left", anchor="w")
     no_file_default = canvas.create_text(190,400, text="No file selected", fill="black",justify="left",anchor="w")
     execution_time = canvas.create_text(540,518, text="", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','13'))
-    file_result = canvas.create_text(120,510,text="None", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','13'))
+    file_result = canvas.create_text(120,510,text="None", fill="black",justify="left",anchor="w", font=('IBM Plex Serif','11'))
 
     img0 = PhotoImage(file = f"GUI/img0.png")
     b0 = Button(
