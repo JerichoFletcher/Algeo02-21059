@@ -1,11 +1,11 @@
 import numpy as np
 from eigenpair import *
 
-#N = 3
 #dataset
 datasetVector = []
 meanDataset = []
 eigenFaceVector = []
+arrRuangWajah = []
 
 def matrixToVector(m):
     # Mengubah matriks m (N x N) menjadi vektor (N^2 x 1)
@@ -39,9 +39,10 @@ def packToMatrix(arrayM):
     return A
 
 def eigenface(dataset):
-    print(dataset)
+    global datasetVector, meanDataset, eigenFaceVector, arrRuangWajah
+    #print(dataset)
     # dataset adalah array of matriks gambar dengan ukuran N x N
-    # ubdah semua matriks pada data set menjadi ukuran N^2 x 1
+    # ubdah semua matriks pada data set menjadi vektor ukuran N^2 x 1
     datasetVector = np.array([[[0] for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
     for i in range (len(dataset)):
         datasetVector[i] = (matrixToVector(dataset[i]))
@@ -54,14 +55,14 @@ def eigenface(dataset):
         sumMatrix = sumMatrix + datasetVector[i]
         #print("sum matrix")
         #print(sumMatrix)
-    meanDataset = np.floor(sumMatrix / len(datasetVector))
+    meanDataset = (sumMatrix / len(datasetVector))
     #print("mean data set")
     #print(meanDataset)
     
     # cari selisih dari tiap matriks dataset dengan meanDataset
-    selisih = np.array([[[0] for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
+    selisih = np.array([[[0.] for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
     for i in range (0,len(dataset)):
-        selisih[i] = abs(np.subtract(datasetVector[i], meanDataset))
+        selisih[i] = (np.subtract(datasetVector[i], meanDataset))
     #print("selisih")
     #print(selisih)
     
@@ -74,8 +75,8 @@ def eigenface(dataset):
     #print(AT)
     covarian = np.matmul(AT,A)
     #covarian = np.matmul(A,AT)
-    print("covarian")
-    print(covarian)
+    #print("covarian")
+    #print(covarian)
     
     # cari eigen value dan eigen vector dari covarian
     #eigenVector = np.array([0.0,0.0] for x in len(dataset))
@@ -83,9 +84,9 @@ def eigenface(dataset):
     eigenValue,eigenVector=extractEigenpairsQR(covarian)
     #print("eigenValue")
     #print(eigenValue)
-    print("eigen vector")
-    print(eigenVector)
-    
+    #print("eigen vector")
+    #print(eigenVector)
+    '''
     # cari magnitude eigen vector
     magnitudeEigenVector = np.array([0. for i in range (len(eigenVector))])
     for i in range (len(magnitudeEigenVector)):
@@ -96,13 +97,28 @@ def eigenface(dataset):
     print("magnitudeEigenVector")
     print(magnitudeEigenVector)
     
+    # normalized eigen vectors = eigenfaces
+    eigenFaceVector = np.array([[0. for i in range(len(dataset))] for x in range (len(dataset))])
+    for i in range (len(dataset)):
+        eigenFaceVector[i] = eigenVector[i] / magnitudeEigenVector[i]
+    print("eigenfaceVector")
+    print(eigenFaceVector)
+    '''
     # cari eigenface dengan mengalikan A dengan setiap eigen vector
     eigenFaceVector = np.array([[0. for i in range(len(dataset[0])**2)] for x in range (len(dataset))])
     for i in range (len(dataset)):
         eigenFaceVector[i] = np.matmul(A,eigenVector[i])
-    print("eigenfaceVector")
-    print(eigenFaceVector)
-    '''return eigenFaceVector'''
+    #print("eigenfaceVector")
+    #print(eigenFaceVector)
+    #return eigenFaceVector
+    
+    # menghitung ruang wajah
+    arrRuangWajah = np.array([[0. for j in range (len(dataset))] for i in range (len(dataset))])
+    for i in range (len(dataset)):
+        for j in range (len(dataset)):
+            arrRuangWajah[i][j] = np.matmul(np.transpose(eigenFaceVector[j]),selisih[i])
+    #print("arrRuangWajah")
+    #print(arrRuangWajah)
     
     # ubdah bentuk eigenface yang dalam bentuk vector (N^2 x 1) menjadi (N x N)
     #retEigenface = np.array([[[0. for j in range (len(dataset[0]))] for i in range(len(dataset[0]))] for x in range (len(dataset))])
@@ -112,11 +128,33 @@ def eigenface(dataset):
     #print(retEigenface)
     #return retEigenface
 
-def ruangWajah():
-    # menghitung ruang wajah
-    arrRuangWajah = np.array([[0] for i in range (len(datasetVector))])
-    for i in range (len(arrRuangWajah)):
-        arrRuangWajah[i] = np.matmul(np.transpose(eigenFaceVector[i]), np.subtract(datasetVector[i], meanDataset))
-    return arrRuangWajah
-
-        
+def testImage(newFace):
+    # parameter matriks image / wajah baru
+    newFaceVector = matrixToVector(newFace)
+    newSelisih = newFaceVector - meanDataset
+    
+    newRuangWajah = np.array([0. for i in range (len(eigenFaceVector))])
+    for i in range (len(eigenFaceVector)):
+        newRuangWajah[i] = np.matmul(np.transpose(eigenFaceVector[i]),newSelisih)
+    #print("newRuangWajah")
+    #print(newRuangWajah)
+    
+    # hitung (matriks) euclidean distance
+    matEuclideanDistance = np.array([[0. for j in range (len(datasetVector))] for i in range (len(datasetVector))])
+    for i in range (len(datasetVector)):
+        matEuclideanDistance[i] = np.subtract(newRuangWajah, np.transpose(arrRuangWajah[i]))
+    
+    # hitung euclidean distance (magnitude)
+    EuclideanDistance = np.array([0. for i in range (len(datasetVector))])
+    for i in range (len(datasetVector)):
+        for j in range (len(datasetVector)):
+            EuclideanDistance[i] += (matEuclideanDistance[i][j]**2)
+    
+    # cari euclidean distance terkecil
+    min = EuclideanDistance[0]
+    idxmin = 0
+    for i in range (len(datasetVector)):
+        if (min > EuclideanDistance[i]):
+            min = EuclideanDistance[i]
+            idxmin = i
+    return idxmin
