@@ -13,7 +13,8 @@ MAX_PIC_COUNT = 5
 # Deklarasi
 # array_image = []
 inplabel = None
-array_of_tupl = []
+array_of_inp = []
+array_of_out = []
 
 def init_window():
     window = Tk()
@@ -25,9 +26,12 @@ def init_window():
         canvas.itemconfig(no_folder_default ,text = folder_only)
 
         # Load image in folder
-        array_of_tupl.clear()
+        array_of_inp.clear()
+        array_of_out.clear()
+
         for f, m in baca_folder(folder):
-            array_of_tupl.append((f, m))
+            array_of_inp.append((f, m))
+
         """ array_image.clear()
         for matrix in baca_folder(folder):
             array_image.append(matrix)
@@ -37,16 +41,22 @@ def init_window():
         print(f"Size: {mattest.shape}")
         print(array_of_tupl[0])
         """
+
         array_of_matrix = []
-        for t in array_of_tupl:
+        array_of_eigface = []
+        for t in array_of_inp:
             array_of_matrix.append(t[1])
 
-        eigenface(array_of_matrix)
+        def getEigface():
+            global array_of_eigface
+            array_of_eigface = eigenface(array_of_matrix)
 
         # Hitung eigenface
-        #t0, t1 = bm.run_measure_ns(lambda: eigenface(array_of_tupl))
-        #print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
-        #"""
+        t0, t1 = bm.run_measure_ns(getEigface)
+        print(f"Finished eigenface extraction in {(t1-t0)/1E9} seconds")
+
+        for i in range(len(array_of_eigface)):
+            array_of_eigface.append((array_of_inp[i][0], array_of_eigface[i]))
 
         
     def files():
