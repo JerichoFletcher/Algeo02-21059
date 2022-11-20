@@ -1,5 +1,5 @@
 import numpy as np
-from eigenpair import *
+from util.eigenpair import *
 
 #dataset
 datasetVector = []

@@ -3,7 +3,7 @@ from tkinter import filedialog
 import os
 from PIL import Image, ImageTk
 import util.processimage as process
-from util.eigenface import eigenface
+from util.eigenface import eigenface, testImage
 import numpy as np
 import util.benchmark as bm
 import time
@@ -17,8 +17,12 @@ array_of_inp = []
 array_of_out = []
 
 def init_window():
+    cek_eigenface = False
+    matrix_image = None
+    index_result = None
     window = Tk()
     def folders():
+        global cek_eigenface, matrix_image, index_result
         root = Tk()
         root.withdraw()
         folder = filedialog.askdirectory() 
@@ -32,6 +36,7 @@ def init_window():
         for f, m in baca_folder(folder):
             array_of_inp.append((f, m))
 
+        
         """ array_image.clear()
         for matrix in baca_folder(folder):
             array_image.append(matrix)
@@ -58,9 +63,15 @@ def init_window():
         for i in range(len(array_of_eigface)):
             array_of_eigface.append((array_of_inp[i][0], array_of_eigface[i]))
 
-        
+        cek_eigenface = True
+
+        if matrix_image is not None:
+            index_result = testImage(matrix_image)
+            
     def files():
         global inplabel
+        global matrix_image
+        global index_result
 
         filename = filedialog.askopenfilename()
         head, tail = os.path.split(filename)
@@ -79,6 +90,11 @@ def init_window():
         inplabel.configure(image = new)
         inplabel.image = new
         imgdatframe.tkraise()
+
+        matrix_image = process.loadImg(filename)
+
+        if cek_eigenface:
+            index_result = testImage(matrix_image)
 
         #display_gambar = canvas.create_image(540,349,image=new)
         #display_gambar.tkraise()
@@ -117,6 +133,10 @@ def init_window():
                     yield t, m
         #'''
                 
+
+    def display_hasil():
+        global index_result
+
     window.geometry("1100x600")
     window.configure(bg = "#fffffa")
 
