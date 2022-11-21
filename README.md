@@ -9,7 +9,9 @@
 Pengenalan wajah merupakan salah satu pengimplementasian teknologi yang digunakan untuk
 kepentingan keamanan hingga saat ini. Salah satunya adalah dengan menggunakan nilai-nilai eigen
 pada gambar wajah. Gambar suatu wajah akan diubah menjadi dalam bentuk matriks sehingga dapat dicari
-nilai eigenfacenya dan dibandingkan berdasarkan jarak euclidean yang terkecil. 
+nilai eigenfacenya dan dibandingkan berdasarkan jarak euclidean yang terkecil. Tugas besar 2 ini bertujuan utama
+untuk membuat program pengenalan wajah menggunakan materi-materi yang telah dipelajari pada mata kuliah IF2123 Aljabar
+Linier dan Geometri dengan bahasa pemrograman Python.
 ## Anggota Kelompok
 1. Arleen Chrysantha Gunardi (13521059)
 2. Shidqi Indy Izhari (13521097)
