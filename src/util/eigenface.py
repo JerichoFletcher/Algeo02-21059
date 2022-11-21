@@ -150,11 +150,14 @@ def testImage(newFace):
         for j in range (len(datasetVector)):
             EuclideanDistance[i] += (matEuclideanDistance[i][j]**2)
     
+    # threshold
+    threshold = (np.max(EuclideanDistance) - np.min(EuclideanDistance)) / 2
+    
     # cari euclidean distance terkecil
-    min = EuclideanDistance[0]
-    idxmin = 0
+    min = np.inf
+    idxmin = -1
     for i in range (len(datasetVector)):
-        if (min > EuclideanDistance[i]):
+        if (min > EuclideanDistance[i] and min < threshold):
             min = EuclideanDistance[i]
             idxmin = i
     print(f'Found picture with distance {min}')
