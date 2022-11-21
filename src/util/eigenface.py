@@ -1,5 +1,6 @@
 import numpy as np
 from util.eigenpair import *
+from math import sqrt
 
 #dataset
 datasetVector = []
@@ -149,15 +150,17 @@ def testImage(newFace):
     for i in range (len(datasetVector)):
         for j in range (len(datasetVector)):
             EuclideanDistance[i] += (matEuclideanDistance[i][j]**2)
+        EuclideanDistance[i] = sqrt(EuclideanDistance[i])
     
     # threshold
-    threshold = (np.max(EuclideanDistance) - np.min(EuclideanDistance)) / 2
+    threshold = (np.max(arrRuangWajah) - np.min(arrRuangWajah)) / 2
+    print(f'Selection threshold: {threshold}')
     
     # cari euclidean distance terkecil
     min = np.inf
     idxmin = -1
     for i in range (len(datasetVector)):
-        if (min > EuclideanDistance[i] and min < threshold):
+        if (min > EuclideanDistance[i] and EuclideanDistance[i] < threshold):
             min = EuclideanDistance[i]
             idxmin = i
     print(f'Found picture with distance {min}')

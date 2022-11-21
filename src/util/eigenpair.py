@@ -59,7 +59,7 @@ def decomposeQR(A):
 def extractEigenpairsQR(M, iter=None):
     A = np.copy(M)
     n = A.shape[0]
-    Qi = np.eye(n)
+    V = np.eye(n)
 
     oldVal = 0
     newVal = None
@@ -70,14 +70,14 @@ def extractEigenpairsQR(M, iter=None):
         S = A[n-1][n-1] * np.eye(n)
         Q, R = decomposeQR(np.subtract(A, S))
         A = np.add(R @ Q, S)
-        Qi = Qi @ Q
+        V = V @ Q
 
         newVal = A[0][0]
         e = err(newVal, oldVal)
         if e is np.NAN or iter is None and e < errThreshold: break
         oldVal = newVal
     if debug: print(f"{i} iterations with QR")
-    return np.diag(A), Qi
+    return np.diag(A), V
 
 # maxEigenpairPI -- Mengembalikan nilai eigenvalue terbesar dari suatu matriks M, ditaksir menggunakan metode power-iteration
 def maxEigenpairPI(M):

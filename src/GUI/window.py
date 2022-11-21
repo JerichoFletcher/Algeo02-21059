@@ -38,7 +38,7 @@ def init_window():
         for f, m in baca_folder(folder, True):
             array_of_inp.append((f, m))
 
-        print(f'Dataset of size {len(array_of_inp)} loaded')
+        print(f'Dataset of size {len(array_of_inp)} loaded, processing...')
         
         """ array_image.clear()
         for matrix in baca_folder(folder):
@@ -146,24 +146,32 @@ def init_window():
     def display_hasil():
         global outlabel, index_result, array_of_inp
 
-        filename, _ = array_of_inp[index_result]
-
-        # Load image
-        imeg = Image.open(filename)
-        resized = imeg.resize((256,256), Image.ANTIALIAS)
-        new = ImageTk.PhotoImage(resized)
-
-        # Place in frame
         if outlabel is not None:
-            outlabel.destroy()
-        outlabel = Label(imgoutframe)
-        outlabel.pack()
-        outlabel.configure(image = new)
-        outlabel.image = new
-        imgoutframe.tkraise()
-        
-        nama_file = os.path.basename(filename)
-        canvas.itemconfig(file_result ,text = nama_file)
+                outlabel.destroy()
+        outlabel = None
+
+        try:
+            if index_result < 0: raise IndexError
+            filename, _ = array_of_inp[index_result]
+
+            # Load image
+            imeg = Image.open(filename)
+            resized = imeg.resize((256,256), Image.ANTIALIAS)
+            new = ImageTk.PhotoImage(resized)
+
+            # Place in frame
+            outlabel = Label(imgoutframe)
+            outlabel.pack()
+            outlabel.configure(image = new)
+            outlabel.image = new
+            imgoutframe.tkraise()
+
+            nama_file = os.path.basename(filename)
+            canvas.itemconfig(file_result ,text = nama_file)
+        except IndexError:
+            canvas.itemconfig(file_result ,text = 'Tidak ada hasil yang cocok')
+        except:
+            canvas.itemconfig(file_result, text = 'Error')
 
 
     window.geometry("1100x600")
