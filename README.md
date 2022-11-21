@@ -20,7 +20,7 @@ nilai eigenfacenya dan dibandingkan berdasarkan jarak euclidean yang terkecil.
 * numpy
 * os
 ## Tampilan Program
-
+![Contoh program setelah dijalankan](https://github.com/JerichoFletcher/Algeo02-21059/blob/main/test/contoh.jpg)
 ## Fitur Tersedia
 * Pencarian foto dengan wajah yang serupa berdasarkan input dataset
 * Execution time dari program
